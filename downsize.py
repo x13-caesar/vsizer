@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from AV_Data_Capture import *
+import os
 import sys
 import cv2
+#import config
 
 
 ## moviepy version
@@ -45,9 +46,25 @@ def resize_and_replace(movie_path, height):
 		print('\033[0;31m[!]Failed file:\033[0m')
 
 
+def movie_lists(root, escape_folder):
+    for folder in escape_folder:
+        if folder in root:
+            return []
+    total = []
+    file_type = ['.mp4', '.avi', '.rmvb', '.wmv', '.mov', '.mkv', '.flv', '.ts', '.webm', '.MP4', '.AVI', '.RMVB', '.WMV','.MOV', '.MKV', '.FLV', '.TS', '.WEBM', '.iso','.ISO']
+    dirs = os.listdir(root)
+    for entry in dirs:
+        f = os.path.join(root, entry)
+        if os.path.isdir(f):
+            total += movie_lists(f, escape_folder)
+        elif os.path.splitext(f)[1] in file_type and '._' not in os.path.splitext(f)[0]:
+            total.append(f)
+    return total
+
+
 if __name__ == '__main__':
 	# Read config.ini
-	conf = config.Config(path='./config.ini')
+	#conf = config.Config(path='./config.ini')
 	HEIGHT = 720
 
 	# If processing single file, add the file path as the 1st parameter in command line
